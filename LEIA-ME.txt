@@ -1,0 +1,27 @@
+SITE: ENTRE LEMBRANÇAS E NOVOS CAPÍTULOS
+
+COMO PERSONALIZAR
+1. Fotos: coloque suas imagens dentro da pasta fotos com estes nomes:
+   foto-01.jpg, foto-02.jpg, foto-03.jpg, foto-04.jpg e foto-05.jpg.
+   Se quiser mais fotos, podemos ampliar a galeria depois.
+2. Músicas: coloque arquivos MP3 na pasta musicas com estes nomes:
+   abertura.mp3, comeco.mp3, lembrancas.mp3, sem-roteiro.mp3,
+   senhoritinha.mp3, reflexao.mp3, quiz.mp3 e final.mp3.
+   Use arquivos que você tenha direito de utilizar. A música só toca quando a pessoa apertar Reproduzir.
+3. Links: abra script.js e altere SITE_CONFIG.instagramUrl e SITE_CONFIG.whatsappUrl.
+   Para WhatsApp, use https://wa.me/55 + DDD + número, tudo junto e sem espaços.
+4. Textos e perguntas: ficam no index.html e no array questions dentro de script.js.
+
+PUBLICAR NO GITHUB PAGES
+1. Abra seu repositório no GitHub.
+2. Clique em Add file > Upload files.
+3. Envie index.html, style.css, script.js, LEIA-ME.txt e as pastas fotos e musicas.
+4. Se o GitHub perguntar, confirme o envio/commit para a branch main.
+5. Em Settings > Pages, selecione Deploy from a branch, branch main e /(root), depois Save.
+6. Aguarde alguns minutos e abra o endereço que o GitHub Pages mostrar.
+
+OBSERVAÇÕES
+- O quiz não calcula nota, não envia respostas e não armazena respostas abertas.
+- As perguntas são de múltipla escolha e não há campo de resposta pessoal.
+- Os links de Instagram e WhatsApp estão como exemplos e precisam ser substituídos.
+- As fotos são espaços reservados: o site funciona sem elas, mas fica mais pessoal quando você inserir as imagens.

@@ -1,0 +1,41 @@
+// Personalize os links e os nomes das músicas nesta área.
+const SITE_CONFIG = {
+  instagramUrl: "https://www.instagram.com/", // substitua pelo perfil ou link desejado
+  whatsappUrl: "https://wa.me/55",             // substitua pelo número com DDI e DDD, só números
+  photos: {
+    "foto-01.jpg": "fotos/foto-01.jpg", "foto-02.jpg": "fotos/foto-02.jpg",
+    "foto-03.jpg": "fotos/foto-03.jpg", "foto-04.jpg": "fotos/foto-04.jpg",
+    "foto-05.jpg": "fotos/foto-05.jpg"
+  }
+};
+const chapters=[...document.querySelectorAll('.screen')];let current=0;const $=id=>document.getElementById(id);
+const dots=$('navDots');chapters.forEach((s,i)=>{const b=document.createElement('button');b.className='nav-dot'+(i===0?' active':'');b.setAttribute('aria-label','Ir para capítulo '+(i+1));b.onclick=()=>show(i);dots.append(b)});
+function show(i){i=Math.max(0,Math.min(chapters.length-1,i));chapters[current].classList.remove('active');current=i;chapters[current].classList.add('active');$('chapterLabel').textContent=chapters[current].dataset.title||'uma história especial';[...dots.children].forEach((d,n)=>d.classList.toggle('active',n===i));$('prevChapter').disabled=i===0;$('nextChapter').disabled=i===chapters.length-1;window.scrollTo({top:0,behavior:'smooth'});setTrack(chapters[i]);if(chapters[i].id==='final')startLanterns();}
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(chapters.findIndex(s=>s.id===b.dataset.go))));$('prevChapter').onclick=()=>show(current-1);$('nextChapter').onclick=()=>show(current+1);
+// Music is user-initiated; closing the panel never stops playback.
+const audio=$('audioPlayer');let loadedTrack='';function setTrack(ch){const file=ch.dataset.track||'';if(file!==loadedTrack){audio.pause();audio.src='musicas/'+file;loadedTrack=file;$('audioStatus').textContent='Adicione o arquivo '+file+' à pasta musicas';$('playButton').textContent='▶ Reproduzir';}$('trackTitle').textContent=ch.dataset.song||'Trilha do capítulo';$('trackArtist').textContent='Trilha personalizável';$('trackNote').textContent=ch.dataset.note||'Escolha uma música que combine com esta lembrança.';}
+$('musicToggle').onclick=()=>{$('musicPanel').classList.toggle('open');$('musicPanel').setAttribute('aria-hidden',String(!$('musicPanel').classList.contains('open')))};$('musicClose').onclick=()=>{$('musicPanel').classList.remove('open');$('musicPanel').setAttribute('aria-hidden','true')};$('playButton').onclick=async()=>{if(!audio.src)return;if(audio.paused){try{await audio.play();$('playButton').textContent='Ⅱ Pausar';$('audioStatus').textContent='Reproduzindo';}catch(e){$('audioStatus').textContent='Não encontrei a música. Confira o arquivo na pasta musicas.'}}else{audio.pause();$('playButton').textContent='▶ Reproduzir';$('audioStatus').textContent='Pausado'}};audio.onended=()=>{$('playButton').textContent='▶ Reproduzir';$('audioStatus').textContent='Faixa concluída'};
+// Replace the placeholders with your own images, keeping the filenames.
+document.querySelectorAll('[data-photo]').forEach(el=>{const file=el.dataset.photo;const src=SITE_CONFIG.photos[file];const img=new Image();img.onload=()=>{el.innerHTML='';el.classList.add('has-photo');el.style.backgroundImage=`url('${src}')`;el.style.backgroundSize='cover';el.style.backgroundPosition='center';el.setAttribute('aria-label','Foto: '+file)};img.onerror=()=>{};img.src=src;el.addEventListener('click',()=>{if(img.complete&&img.naturalWidth){$('lightboxImage').src=src;$('lightbox').classList.add('open')}})});
+$('lightboxClose').onclick=()=>$('lightbox').classList.remove('open');$('lightbox').onclick=e=>{if(e.target===$('lightbox'))$('lightbox').classList.remove('open')};
+// Quiet falling lily petals, kept sparse so they never cover the text.
+function petal(){if(document.hidden)return;const p=document.createElement('span');p.className='petal';p.textContent=Math.random()>.5?'✿':'❀';p.style.left=Math.random()*100+'vw';p.style.setProperty('--duration',(10+Math.random()*9)+'s');p.style.setProperty('--drift',(Math.random()*150-75)+'px');p.style.fontSize=(11+Math.random()*10)+'px';$('petals').append(p);setTimeout(()=>p.remove(),20000)}setInterval(()=>{if(Math.random()>.35)petal()},2600);
+let lanternTimer=null;function startLanterns(){if(lanternTimer)return;const field=$('lanterns');for(let i=0;i<18;i++)setTimeout(()=>makeLantern(field),i*550);lanternTimer=setInterval(()=>{if(current===chapters.length-1)makeLantern(field);else{clearInterval(lanternTimer);lanternTimer=null}},1500)}function makeLantern(field){const l=document.createElement('i');l.className='lantern';l.style.left=(Math.random()*95)+'%';l.style.setProperty('--duration',(13+Math.random()*9)+'s');l.style.setProperty('--drift',(Math.random()*120-60)+'px');field.append(l);setTimeout(()=>l.remove(),24000)}
+$('instagramLink').href=SITE_CONFIG.instagramUrl;$('whatsappLink').href=SITE_CONFIG.whatsappUrl;
+// Quiz: friendly memories, no score and no data is collected or sent.
+const questions=[
+{q:'O que costumávamos fazer quando você saía do estágio mais cedo?',a:['Bebíamos copão e conversávamos na calçada.','Íamos direto para casa dormir.','Fazíamos compras no mercado.'],c:0,m:'Copão, calçada e conversa que parecia não ter hora para acabar. ♡'},
+{q:'Qual é a minha matéria favorita?',a:['Direito Civil','Direito Penal','Direito Constitucional'],c:1,m:'Direito Penal — essa você não podia esquecer!'},
+{q:'Qual profissão você sempre me contou ser o seu sonho?',a:['Promotora de Justiça','Delegada','Advogada criminalista'],c:2,m:'Que você siga firme atrás desse sonho. Tenho certeza de que ainda vai longe.'},
+{q:'O que prometemos um para o outro?',a:['Viajar pelo mundo','Nos apoiar até o final','Nunca discordar'],c:1,m:'A promessa era de apoio. E desejar o seu bem continua fazendo sentido.'},
+{q:'Qual apelido ficou marcado nas nossas brincadeiras?',a:['Doutorinha','Senhoritinha','Princesa'],c:1,m:'Senhoritinha. Pequena no tamanho, gigante nas histórias. ✿'},
+{q:'O que a gente gostava de fazer sem precisar de destino?',a:['Caminhar por aí sem rumo','Planejar viagens','Ficar em casa vendo TV'],c:0,m:'Às vezes, o passeio era só caminhar e deixar a conversa escolher o caminho.'},
+{q:'Qual personagem da Disney você gosta?',a:['Moana','Rapunzel','Mulan'],c:1,m:'Rapunzel — e aquele solzinho que é tão a sua cara.'},
+{q:'Qual série também faz parte das suas referências?',a:['Outer Banks','Friends','The Vampire Diaries'],c:0,m:'Outer Banks combina com aventura, verão e histórias para lembrar.'},
+{q:'Qual estilo musical combina com o seu gosto?',a:['Rock clássico','Sertanejo','Jazz'],c:1,m:'Sertanejo, claro. Uma trilha que tem a sua cara.'},
+{q:'Qual música você cantava bastante?',a:['Cadeira Cativa','Evidências','Nosso Quadro'],c:0,m:'Cadeira Cativa — impossível não lembrar de você cantando.'},
+{q:'Qual símbolo aparece na sua tatuagem inspirada em Enrolados?',a:['Uma estrela','O sol de Corona','Uma flor'],c:1,m:'O sol de Corona. Um detalhe pequeno, mas cheio de significado.'},
+{q:'Qual destas coisas mais combina com a nossa história?',a:['Só grandes acontecimentos','Pequenos momentos que viraram lembranças','Uma história sem conversas'],c:1,m:'No fim, eram os detalhes que faziam os dias serem especiais.'}
+];let qi=0;function renderQuestion(){const q=questions[qi];$('questionText').textContent=q.q;$('quizCount').textContent=String(qi+1).padStart(2,'0')+' / 12';$('quizPhase').textContent=qi<4?'FASE 1 · VOCÊ LEMBRA?':qi<8?'FASE 2 · SENHORITINHA':'FASE 3 · O QUE FICOU?';$('quizProgress').style.width=((qi+1)/12*100)+'%';$('feedback').textContent='';$('nextQuestion').disabled=true;$('nextQuestion').textContent=qi===11?'Ver encerramento →':'Próxima lembrança →';$('answers').innerHTML='';q.a.forEach((answer,i)=>{const b=document.createElement('button');b.className='answer';b.textContent=answer;b.onclick=()=>{[...$('answers').children].forEach(x=>x.disabled=true);b.classList.add(i===q.c?'correct':'wrong');$('answers').children[q.c].classList.add('correct');$('feedback').textContent=q.m;$('nextQuestion').disabled=false;petal()};$('answers').append(b)})}
+$('nextQuestion').onclick=()=>{qi++;if(qi>=questions.length){$('quizCard').hidden=true;$('quizDone').hidden=false;$('quizProgress').style.width='100%'}else renderQuestion()};renderQuestion();
+show(0);
